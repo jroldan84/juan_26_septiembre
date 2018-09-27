@@ -1,0 +1,72 @@
+
+--1. Create a tablespace with name 'quiz_noche' and two datafiles. Each datafile of 10Mb.
+
+create  tablespace quiz_noche
+        datafile 'quiz_noche_1.dbf' size 10M;
+       
+--2. Create a profile with idle time of 5 minutes, the name of the profile should be 'estudiante'
+
+create role  estudiante;
+
+--3. Create an user named "user1" with password "user1". 
+	-- The user should be able to connect
+	-- The user should has the profile "estudiante"
+	-- The user should be associated to the tablespace "quiz_noche"
+	-- The user should be able to create tables WITHOUT USING THE DBA ROLE. 
+
+create user user1
+identified by  user1
+default tablespace quiz_noche
+quota unlimited on quiz_noche;
+--------------------------------------------------------------
+-- asociar  permiso  conexion  al rol estudiante
+
+grant  connect to estudiante;
+
+-- asociar  el  rol 'estudiante ' al user1
+    
+grant  estudiante  to  user1;
+----------------------------------------------------------------
+grant create table to  estudiante;
+
+--4. Create an user named "user2" with password "user2"
+	-- The user should be able to connect
+	-- The user should has the profile "estudiante"
+	-- The user should be associated to the tablespace "quiz_noche"
+	-- The user shouldn't be able to create tables.
+
+create user user2
+identified by  user2
+default tablespace quiz_noche
+quota unlimited on quiz_noche;
+--------------------------------------------------------------
+-- asociar  permiso  conexion  al rol estudiante
+
+grant  connect to estudiante;
+
+-- asociar  el  rol 'estudiante ' al user2
+    
+grant  estudiante  to  user2;
+----------------------------------------------------------------
+grant create table to  estudiante;
+
+--parte II
+
+-- creo usuario con  el  usuario  1
+
+create table attacks (
+	id INT,
+	url VARCHAR(2048),
+	ip_address VARCHAR(20),
+	number_of_attacks INT,
+	time_of_last_attack TIMESTAMP
+);
+
+
+--Count the urls which have been attacked and have the protocol 'http'
+select url,count(*)
+from  attacks
+where ip_address like '%http%'
+group by url
+
+--
